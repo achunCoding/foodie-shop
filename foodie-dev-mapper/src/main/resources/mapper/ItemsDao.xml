@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.wycfight.mapper.ItemsDao">
+
+    <select id="queryItemComments" resultType="top.wycfight.pojo.vo.ItemsCommentVO">
+    SELECT
+	ic.comment_level commentLevel,
+	ic.content content,
+	ic.created_time createdTime,
+	ic.sepc_name sepcName,
+	users.face userFace,
+	users.nickname nickName
+    FROM
+	items_comments ic
+    LEFT JOIN users users ON ic.user_id = users.id
+    WHERE
+	ic.item_id = #{params.itemId}
+	<if test="params.commentLevel != null and params.commentLevel != ''">
+    AND ic.comment_level = #{params.commentLevel}
+	</if>
+  </select>
+</mapper>
