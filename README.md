@@ -1,2 +1,4 @@
 # foodie-shop
-IMOOC 练习项目
+IMOOC 练习项目 不定期更新，
+-- 2020/03/10 更新到评价内容，前端项目可以在github中其他人获取，document中有sql文件
+有任何问题第一时间联系。wycfight@163.com
