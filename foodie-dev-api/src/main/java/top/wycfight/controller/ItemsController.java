@@ -10,6 +10,7 @@ import top.wycfight.pojo.vo.CommentLevelCountsVO;
 import top.wycfight.pojo.vo.ItemsInfoVO;
 import top.wycfight.service.ItemService;
 import top.wycfight.utils.JSONResult;
+import top.wycfight.utils.PagedResult;
 
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class ItemsController {
     @GetMapping("info/{itemId}")
     @ApiOperation(value = "获取商品信息详情", notes = "获取商品信息详情", httpMethod = "GET")
     public JSONResult info(@ApiParam(name = "itemId", value = "商品ID")
-                               @PathVariable(value = "itemId") String itemId) {
+                           @PathVariable(value = "itemId") String itemId) {
         if (itemId == null) {
             return JSONResult.errorMsg("商品ID为null");
         }
@@ -63,7 +64,7 @@ public class ItemsController {
     @GetMapping("commentLevel")
     @ApiOperation(value = "获取评价总数", notes = "获取评价总数", httpMethod = "GET")
     public JSONResult commentLevel(@ApiParam(name = "itemId", value = "商品ID")
-                           @RequestParam(value = "itemId") String itemId) {
+                                   @RequestParam(value = "itemId") String itemId) {
         if (itemId == null) {
             return JSONResult.errorMsg("商品ID为null");
         }
@@ -71,6 +72,30 @@ public class ItemsController {
         CommentLevelCountsVO commentLevelCountsVO = itemService.queryCommnetCounts(itemId);
 
         return JSONResult.ok(commentLevelCountsVO);
+    }
+
+    /**
+     * 查询商品评论
+     *
+     * @return
+     */
+    @GetMapping("comments")
+    @ApiOperation(value = "查询商品评论", notes = "查询商品评论", httpMethod = "GET")
+    public JSONResult commentLevel(@ApiParam(name = "itemId", value = "商品ID", required = true)
+                                   @RequestParam(value = "itemId") String itemId,
+                                   @ApiParam(name = "level", value = "评论等级", required = false)
+                                   @RequestParam(value = "level") Integer level,
+                                   @ApiParam(name = "page", value = "当前页", required = false)
+                                   @RequestParam(value = "page", defaultValue = "1") Integer page,
+                                   @ApiParam(name = "pageSize", value = "每页条数", required = false)
+                                   @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
+        if (itemId == null) {
+            return JSONResult.errorMsg("商品ID为null");
+        }
+
+        PagedResult pagedResult = itemService.queryPagedComments(itemId, level, page, pageSize);
+
+        return JSONResult.ok(pagedResult);
     }
 
 

@@ -2,6 +2,7 @@ package top.wycfight.service.impl;
 
 
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -13,6 +14,8 @@ import top.wycfight.pojo.*;
 import top.wycfight.pojo.vo.CommentLevelCountsVO;
 import top.wycfight.pojo.vo.ItemsCommentVO;
 import top.wycfight.service.ItemService;
+import top.wycfight.utils.DesensitizationUtil;
+import top.wycfight.utils.PagedResult;
 
 import java.util.HashMap;
 import java.util.List;
@@ -107,12 +110,31 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public List<ItemsCommentVO> queryPagedComments(String itemId, Integer level, Integer page, Integer pageSize) {
+    public PagedResult queryPagedComments(String itemId, Integer level, Integer page, Integer pageSize) {
         Map<String, Object> map = new HashMap<>();
         map.put("itemId", itemId);
         map.put("commentLevel", level);
 
         PageHelper.startPage(page, pageSize);
-        return itemsDao.queryItemComments(map);
+        List<ItemsCommentVO> list = itemsDao.queryItemComments(map);
+        for (ItemsCommentVO itemsCommentVO : list) {
+            itemsCommentVO.setNickName(DesensitizationUtil.getStarString(itemsCommentVO.getNickName(),2,8));
+        }
+        return setterPaged(list,page);
+
+    }
+
+    /**
+     * 封装分页返回参数
+     * @return
+     */
+    private PagedResult setterPaged(List<?> list, Integer page) {
+        PageInfo pageInfo = new PageInfo(list);
+        PagedResult pagedResult = new PagedResult();
+        pagedResult.setPage(page);
+        pagedResult.setRows(list);
+        pagedResult.setRecords(pageInfo.getTotal());
+        pagedResult.setTotal(pageInfo.getPages());
+        return pagedResult;
     }
 }

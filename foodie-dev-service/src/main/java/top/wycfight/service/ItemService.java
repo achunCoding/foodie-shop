@@ -5,7 +5,7 @@ import top.wycfight.pojo.ItemsImg;
 import top.wycfight.pojo.ItemsParam;
 import top.wycfight.pojo.ItemsSpec;
 import top.wycfight.pojo.vo.CommentLevelCountsVO;
-import top.wycfight.pojo.vo.ItemsCommentVO;
+import top.wycfight.utils.PagedResult;
 
 import java.util.List;
 
@@ -63,6 +63,6 @@ public interface ItemService {
      * @param level 评价等级
      * @return
      */
-    List<ItemsCommentVO> queryPagedComments(String itemId, Integer level, Integer page, Integer pageSize);
+    PagedResult queryPagedComments(String itemId, Integer level, Integer page, Integer pageSize);
 
 }
