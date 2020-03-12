@@ -13,6 +13,8 @@ import top.wycfight.mapper.*;
 import top.wycfight.pojo.*;
 import top.wycfight.pojo.vo.CommentLevelCountsVO;
 import top.wycfight.pojo.vo.ItemsCommentVO;
+import top.wycfight.pojo.vo.ItemsInfoVO;
+import top.wycfight.pojo.vo.SearchItemsVO;
 import top.wycfight.service.ItemService;
 import top.wycfight.utils.DesensitizationUtil;
 import top.wycfight.utils.PagedResult;
@@ -54,6 +56,8 @@ public class ItemServiceImpl implements ItemService {
     public Items queryItemById(String itemId) {
         return itemsMapper.selectByPrimaryKey(itemId);
     }
+
+
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
@@ -136,5 +140,28 @@ public class ItemServiceImpl implements ItemService {
         pagedResult.setRecords(pageInfo.getTotal());
         pagedResult.setTotal(pageInfo.getPages());
         return pagedResult;
+    }
+
+    @Override
+    public PagedResult searchItemsByCatId(Integer catId, String sort, Integer page, Integer pageSize) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("catId", catId);
+        map.put("sort", sort);
+
+        PageHelper.startPage(page, pageSize);
+        List<ItemsCommentVO> list = itemsDao.searchItemsByCatId(map);
+        return setterPaged(list,page);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public PagedResult searchItems(String keywords, String sort, Integer page, Integer pageSize) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("keywords", keywords);
+        map.put("sort", sort);
+
+        PageHelper.startPage(page, pageSize);
+        List<SearchItemsVO> list = itemsDao.searchItems(map);
+        return setterPaged(list,page);
     }
 }
