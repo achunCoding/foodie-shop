@@ -149,7 +149,7 @@ public class ItemServiceImpl implements ItemService {
         map.put("sort", sort);
 
         PageHelper.startPage(page, pageSize);
-        List<ItemsCommentVO> list = itemsDao.searchItemsByCatId(map);
+        List<SearchItemsVO> list = itemsDao.searchItemsByCatId(map);
         return setterPaged(list,page);
     }
 

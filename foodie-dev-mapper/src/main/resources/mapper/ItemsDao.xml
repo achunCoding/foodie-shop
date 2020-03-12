@@ -56,7 +56,7 @@
 
 		</choose>
 	</select>
-	<select id="searchItemsByCatId" resultType="top.wycfight.pojo.vo.ItemsCommentVO">
+	<select id="searchItemsByCatId" resultType="top.wycfight.pojo.vo.SearchItemsVO">
 		SELECT
 		items.id AS itemId,
 		items.item_name AS itemName,

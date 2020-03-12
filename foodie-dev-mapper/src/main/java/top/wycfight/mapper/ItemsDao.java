@@ -27,5 +27,5 @@ public interface ItemsDao  {
      * @param map
      * @return
      */
-    List<ItemsCommentVO> searchItemsByCatId(@Param("params") Map<String,Object> map);
+    List<SearchItemsVO> searchItemsByCatId(@Param("params") Map<String,Object> map);
 }
