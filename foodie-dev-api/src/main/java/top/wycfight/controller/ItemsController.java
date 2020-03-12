@@ -3,6 +3,7 @@ package top.wycfight.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import top.wycfight.pojo.*;
@@ -94,6 +95,55 @@ public class ItemsController {
         }
 
         PagedResult pagedResult = itemService.queryPagedComments(itemId, level, page, pageSize);
+
+        return JSONResult.ok(pagedResult);
+    }
+
+    /**
+     * 查询商品列表
+     *
+     * @return
+     */
+    @GetMapping("search")
+    @ApiOperation(value = "查询商品列表", notes = "查询商品列表", httpMethod = "GET")
+    public JSONResult commentLevel(@ApiParam(name = "keywords", value = "关键字", required = true)
+                                   @RequestParam(value = "keywords") String keywords,
+                                   @ApiParam(name = "sort", value = "排序", required = false)
+                                   @RequestParam(value = "sort") String sort,
+                                   @ApiParam(name = "page", value = "当前页", required = false)
+                                   @RequestParam(value = "page", defaultValue = "1") Integer page,
+                                   @ApiParam(name = "pageSize", value = "每页条数", required = false)
+                                   @RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize) {
+        if (StringUtils.isBlank(keywords)) {
+            return JSONResult.errorMsg("关键字为空");
+        }
+
+        PagedResult pagedResult = itemService.searchItems(keywords, sort, page, pageSize);
+
+        return JSONResult.ok(pagedResult);
+    }
+
+
+    /**
+     * 通过分类ID查询商品
+     *
+     * @return
+     */
+    @GetMapping("catItems")
+    @ApiOperation(value = "通过分类ID查询商品", notes = "通过分类ID查询商品", httpMethod = "GET")
+    public JSONResult catItems(@ApiParam(name = "catId", value = "分类ID", required = true)
+                                   @RequestParam(value = "catId") Integer catId,
+                                   @ApiParam(name = "sort", value = "排序", required = false)
+                                   @RequestParam(value = "sort") String sort,
+                                   @ApiParam(name = "page", value = "当前页", required = false)
+                                   @RequestParam(value = "page", defaultValue = "1") Integer page,
+                                   @ApiParam(name = "pageSize", value = "每页条数", required = false)
+                                   @RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize) {
+        if (catId == null) {
+            return JSONResult.errorMsg("分类ID不能为空");
+        }
+
+        PagedResult pagedResult = itemService.searchItemsByCatId(catId, sort, page, pageSize);
 
         return JSONResult.ok(pagedResult);
     }

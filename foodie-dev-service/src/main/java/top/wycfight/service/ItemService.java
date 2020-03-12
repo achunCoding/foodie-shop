@@ -65,4 +65,24 @@ public interface ItemService {
      */
     PagedResult queryPagedComments(String itemId, Integer level, Integer page, Integer pageSize);
 
+    /**
+     * 获取商品信息
+     * @param keywords 关键字
+     * @param sort 排序
+     * @param page 当前页
+     * @param pageSize 每页条数
+     * @return
+     */
+    PagedResult searchItems(String keywords, String sort, Integer page, Integer pageSize);
+
+    /**
+     * 通过三级分类ID查询商品
+     * @param catId 分类ID
+     * @param sort 排序
+     * @param page 当前页
+     * @param pageSize 每页条数
+     * @return
+     */
+    PagedResult searchItemsByCatId(Integer catId, String sort, Integer page, Integer pageSize);
+
 }

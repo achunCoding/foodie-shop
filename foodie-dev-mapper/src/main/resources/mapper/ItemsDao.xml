@@ -19,4 +19,77 @@
     AND ic.comment_level = #{params.commentLevel}
 	</if>
   </select>
+    <select id="searchItems" resultType="top.wycfight.pojo.vo.SearchItemsVO">
+		SELECT
+	items.id AS itemId,
+	items.item_name AS itemName,
+	items.sell_counts AS sellCounts,
+	ii.url AS imgUrl,
+	temps.price_discount as price
+	FROM
+	items items
+	LEFT JOIN items_img ii ON items.id = ii.item_id
+	LEFT JOIN (
+	SELECT
+		item_id,
+		MIN(price_discount) as price_discount
+	FROM
+		items_spec
+	GROUP BY
+		item_id
+	) temps ON temps.item_id = items.id
+	where ii.is_main = 1
+	<if test="params.keywords != null and params.keywords != ''">
+			AND items.item_name like  CONCAT('%',#{params.keywords},'%')
+	</if>
+	ORDER BY
+		<choose>
+			<when test="params.sort == &quot;c&quot;">
+				items.sell_counts desc
+			</when>
+			<when test="params.sort == &quot;p&quot;">
+				temps.price_discount asc
+			</when>
+			<otherwise>
+				items.item_name desc
+			</otherwise>
+
+		</choose>
+	</select>
+	<select id="searchItemsByCatId" resultType="top.wycfight.pojo.vo.ItemsCommentVO">
+		SELECT
+		items.id AS itemId,
+		items.item_name AS itemName,
+		items.sell_counts AS sellCounts,
+		ii.url AS imgUrl,
+		temps.price_discount as price
+		FROM
+		items items
+		LEFT JOIN items_img ii ON items.id = ii.item_id
+		LEFT JOIN (
+		SELECT
+		item_id,
+		MIN(price_discount) as price_discount
+		FROM
+		items_spec
+		GROUP BY
+		item_id
+		) temps ON temps.item_id = items.id
+		where ii.is_main = 1
+		AND items.cat_Id = #{params.catId}
+		ORDER BY
+		<choose>
+			<when test="params.sort == &quot;c&quot;">
+				items.sell_counts desc
+			</when>
+			<when test="params.sort == &quot;p&quot;">
+				temps.price_discount asc
+			</when>
+			<otherwise>
+				items.item_name desc
+			</otherwise>
+
+		</choose>
+
+	</select>
 </mapper>
