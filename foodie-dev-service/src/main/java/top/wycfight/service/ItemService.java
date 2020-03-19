@@ -5,6 +5,7 @@ import top.wycfight.pojo.ItemsImg;
 import top.wycfight.pojo.ItemsParam;
 import top.wycfight.pojo.ItemsSpec;
 import top.wycfight.pojo.vo.CommentLevelCountsVO;
+import top.wycfight.pojo.vo.ShopcartVO;
 import top.wycfight.utils.PagedResult;
 
 import java.util.List;
@@ -84,5 +85,12 @@ public interface ItemService {
      * @return
      */
     PagedResult searchItemsByCatId(Integer catId, String sort, Integer page, Integer pageSize);
+
+    /**
+     * 通过规格ID查询最新商品信息
+     * @param specIds 规格ID
+     * @return
+     */
+    List<ShopcartVO> queryItemsBySpecId(String specIds);
 
 }

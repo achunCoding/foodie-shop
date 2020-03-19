@@ -92,4 +92,24 @@
 		</choose>
 
 	</select>
+	<select id="searchItemsBySpecId" resultType="top.wycfight.pojo.vo.ShopcartVO">
+		SELECT
+	i.id AS itemId,
+	ii.url AS itemImgUrl,
+	i.item_name AS itemName,
+	it.id AS specId,
+	it.`name` AS specName,
+	it.price_discount AS priceDiscount,
+	it.price_normal AS priceNormal
+FROM
+	items_spec it
+LEFT JOIN items i ON it.item_id = i.id
+LEFT JOIN items_img ii ON ii.item_id = i.id
+WHERE
+	ii.is_main = 1
+		AND  it.id in
+		<foreach item="sepcId" collection="paramsList" separator="," open="(" close=")" index="index">
+			#{sepcId}
+		</foreach>
+	</select>
 </mapper>

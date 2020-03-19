@@ -11,14 +11,12 @@ import tk.mybatis.mapper.entity.Example;
 import top.wycfight.enums.CommentLevel;
 import top.wycfight.mapper.*;
 import top.wycfight.pojo.*;
-import top.wycfight.pojo.vo.CommentLevelCountsVO;
-import top.wycfight.pojo.vo.ItemsCommentVO;
-import top.wycfight.pojo.vo.ItemsInfoVO;
-import top.wycfight.pojo.vo.SearchItemsVO;
+import top.wycfight.pojo.vo.*;
 import top.wycfight.service.ItemService;
 import top.wycfight.utils.DesensitizationUtil;
 import top.wycfight.utils.PagedResult;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -163,5 +161,11 @@ public class ItemServiceImpl implements ItemService {
         PageHelper.startPage(page, pageSize);
         List<SearchItemsVO> list = itemsDao.searchItems(map);
         return setterPaged(list,page);
+    }
+
+    @Override
+    public List<ShopcartVO> queryItemsBySpecId(String specIds) {
+        String[] split = specIds.split(",");
+        return itemsDao.searchItemsBySpecId(Collections.singletonList(specIds));
     }
 }

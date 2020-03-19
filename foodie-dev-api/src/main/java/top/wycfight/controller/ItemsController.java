@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import top.wycfight.pojo.*;
 import top.wycfight.pojo.vo.CommentLevelCountsVO;
 import top.wycfight.pojo.vo.ItemsInfoVO;
+import top.wycfight.pojo.vo.ShopcartVO;
 import top.wycfight.service.ItemService;
 import top.wycfight.utils.JSONResult;
 import top.wycfight.utils.PagedResult;
@@ -146,6 +147,21 @@ public class ItemsController {
         PagedResult pagedResult = itemService.searchItemsByCatId(catId, sort, page, pageSize);
 
         return JSONResult.ok(pagedResult);
+    }
+
+    /**
+     * 刷新购物车商品信息
+     *
+     * @return
+     */
+    @GetMapping("refresh")
+    @ApiOperation(value = "刷新购物车商品信息", notes = "刷新购物车商品信息", httpMethod = "GET")
+    public JSONResult refresh(@RequestParam(value = "itemSpecIds") String specIds) {
+        if (StringUtils.isBlank(specIds)) {
+            return JSONResult.errorMsg("没有商品信息");
+        }
+        List<ShopcartVO> list = itemService.queryItemsBySpecId(specIds);
+        return JSONResult.ok(list);
     }
 
 

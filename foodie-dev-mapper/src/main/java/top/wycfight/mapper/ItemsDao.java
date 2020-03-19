@@ -4,6 +4,7 @@ package top.wycfight.mapper;
 import org.apache.ibatis.annotations.Param;
 import top.wycfight.pojo.vo.ItemsCommentVO;
 import top.wycfight.pojo.vo.SearchItemsVO;
+import top.wycfight.pojo.vo.ShopcartVO;
 
 import java.util.List;
 import java.util.Map;
@@ -28,4 +29,11 @@ public interface ItemsDao  {
      * @return
      */
     List<SearchItemsVO> searchItemsByCatId(@Param("params") Map<String,Object> map);
+
+    /**
+     * 通过规格查询商品最新信息
+     * @param sepcIds 规格ID
+     * @return
+     */
+    List<ShopcartVO> searchItemsBySpecId(@Param("paramsList") List<String> sepcIds);
 }
