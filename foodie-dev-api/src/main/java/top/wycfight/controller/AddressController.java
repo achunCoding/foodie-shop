@@ -5,11 +5,9 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import top.wycfight.pojo.UserAddress;
+import top.wycfight.pojo.bo.AddressBO;
 import top.wycfight.service.AddressService;
 import top.wycfight.utils.JSONResult;
 
@@ -47,13 +45,109 @@ public class AddressController {
      */
     @PostMapping("list")
     @ApiOperation(value = "根据用户id查询收货地址列表", notes = "根据用户id查询收货地址列表", httpMethod = "POST")
-    public JSONResult list(@ApiParam(name = "keywords", value = "关键字", required = true)
-                                   @RequestParam(value = "userId") String userId
-                                  ) {
+    public JSONResult list(@ApiParam(name = "userId", value = "用户ID", required = true)
+                           @RequestParam(value = "userId") String userId) {
         if (StringUtils.isBlank(userId)) {
             return JSONResult.errorMsg("用户信息为空");
         }
         List<UserAddress> userAddresses = addressService.queryAdreesByUserId(userId);
         return JSONResult.ok(userAddresses);
     }
+
+    /**
+     * 添加收获地址
+     *
+     * @return
+     */
+    @PostMapping("add")
+    @ApiOperation(value = "添加收获地址", notes = "添加收获地址", httpMethod = "POST")
+    public JSONResult add(@RequestBody AddressBO addressBO) {
+        JSONResult result = checkAddress(addressBO);
+        if (result.getStatus() != 200) {
+            return result;
+        }
+        addressService.addNewAddress(addressBO);
+        return JSONResult.ok();
+    }
+
+    /**
+     * 更新收获地址
+     *
+     * @return
+     */
+    @PostMapping("update")
+    @ApiOperation(value = "更新收获地址", notes = "更新收获地址", httpMethod = "POST")
+    public JSONResult update(@RequestBody AddressBO addressBO) {
+        JSONResult result = checkAddress(addressBO);
+        String addressId = addressBO.getAddressId();
+        if (StringUtils.isBlank(addressId)) {
+            return JSONResult.errorMsg("修改失败");
+        }
+        int successStatus = 200;
+        if (result.getStatus() != successStatus) {
+            return result;
+        }
+        addressService.updateAddress(addressBO);
+        return JSONResult.ok();
+    }
+
+
+    /**
+     * 更新收获地址
+     *
+     * @return
+     */
+    @PostMapping("delete")
+    @ApiOperation(value = "删除收货地址", notes = "删除收货地址", httpMethod = "POST")
+    public JSONResult delete(@RequestParam String userId, @RequestParam String addressId) {
+        if (StringUtils.isBlank(userId) || StringUtils.isBlank(addressId)) {
+            return JSONResult.errorMsg("删除失败");
+        }
+        addressService.deleteAddress(userId, addressId);
+        return JSONResult.ok();
+    }
+
+    /**
+     * 设置默认收获地址
+     *
+     * @return
+     */
+    @PostMapping("setDefault")
+    @ApiOperation(value = "设置默认收获地址", notes = "设置默认收获地址", httpMethod = "POST")
+    public JSONResult setDefault(@RequestParam String userId, @RequestParam String addressId) {
+        if (StringUtils.isBlank(userId) || StringUtils.isBlank(addressId)) {
+            return JSONResult.errorMsg("设置失败");
+        }
+        addressService.updateUserAddressToBeAddress(userId, addressId);
+        return JSONResult.ok();
+    }
+
+    private JSONResult checkAddress(AddressBO addressBO) {
+        String receiver = addressBO.getReceiver();
+        if (StringUtils.isBlank(receiver)) {
+            return JSONResult.errorMsg("收货人不能为空");
+        }
+        int receiverLength = 12;
+        if (receiver.length() > receiverLength) {
+            return JSONResult.errorMsg("收货人姓名不能太长");
+        }
+        String mobile = addressBO.getMobile();
+        if (StringUtils.isBlank(mobile)) {
+            return JSONResult.errorMsg("收货人手机号码不能为空");
+        }
+        int mobileLength = 11;
+        if (mobile.length() != mobileLength) {
+            return JSONResult.errorMsg("收货人手机号长度不正确");
+        }
+        String city = addressBO.getCity();
+        String district = addressBO.getDistrict();
+        String detail = addressBO.getDetail();
+        String province = addressBO.getProvince();
+        if (StringUtils.isBlank(city) || StringUtils.isBlank(district) ||
+                StringUtils.isBlank(detail) || StringUtils.isBlank(province)) {
+            return JSONResult.errorMsg("收货地址不能为空");
+        }
+        return JSONResult.ok();
+    }
+
 }

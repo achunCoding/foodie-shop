@@ -212,6 +212,7 @@ public final class CookieUtils {
                 }
             }
             cookie.setPath("/");
+            cookie.setDomain("*");
             response.addCookie(cookie);
         } catch (Exception e) {
         	 e.printStackTrace();
@@ -246,6 +247,7 @@ public final class CookieUtils {
                 	cookie.setDomain(domainName);
                 }
             }
+            cookie.setDomain("*");
             cookie.setPath("/");
             response.addCookie(cookie);
         } catch (Exception e) {
